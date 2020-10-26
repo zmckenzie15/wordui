@@ -1,11 +1,9 @@
 package edu.mills.cs180a.wordui.model;
 
-import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.util.Callback;
 
 import java.util.Objects;
 
