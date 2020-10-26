@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 
 import edu.mills.cs180a.wordui.model.SampleData;
 import edu.mills.cs180a.wordui.model.WordRecord;
+import edu.mills.cs180a.wordui.model.WordRecord.SortOrder;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -16,12 +18,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.util.Callback;
 
 public class FXMLController implements Initializable {
+	@FXML
+	private ChoiceBox<WordRecord.SortOrder> sortChoiceBox;
 	@FXML
 	private TextField wordTextField;
 	@FXML
@@ -37,7 +43,10 @@ public class FXMLController implements Initializable {
 	@FXML
 	private ListView<WordRecord> listView;
 
-	private final ObservableList<WordRecord> wordRecordList = FXCollections.observableArrayList();
+	public static Callback<WordRecord, Observable[]> extractor = wr -> new Observable[] { wr.definitionProperty(),
+			wr.frequencyProperty() };
+
+	private final ObservableList<WordRecord> wordRecordList = FXCollections.observableArrayList(extractor);
 
 	private WordRecord selectedWordRecord;
 	private final BooleanProperty modifiedProperty = new SimpleBooleanProperty(false);
@@ -63,20 +72,30 @@ public class FXMLController implements Initializable {
 		}
 	}
 
+	private void setSortOrder(SortOrder newValue) {
+		SortedList<WordRecord> sortedList = new SortedList<>(wordRecordList);
+		sortedList.setComparator(newValue.getComparator());
+		listView.setItems(sortedList);
+	}
+
+	private class SortOrderChangeListener implements ChangeListener<WordRecord.SortOrder> {
+		@Override
+		public void changed(ObservableValue<? extends SortOrder> observable, SortOrder oldValue, SortOrder newValue) {
+			setSortOrder(newValue);
+		}
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		configureButtons();
-
 		// Initialize the list.
 		SampleData.fillSampleData(wordRecordList);
 
-		// Sort list alphabetically.
-		SortedList<WordRecord> sortedList = new SortedList<>(wordRecordList);
-		sortedList.setComparator((p1, p2) -> p1.getWord().compareToIgnoreCase(p2.getWord()));
-		listView.setItems(sortedList);
+		configureButtons();
+		populateChoiceBox();
 
-		// Listen for records to be selected.
-		listView.getSelectionModel().selectedItemProperty().addListener(wordRecordChangeListener);
+		// Sort list alphabetically.
+
+		addListeners();
 
 		// Pre-select the first item.
 		listView.getSelectionModel().selectFirst();
@@ -96,6 +115,20 @@ public class FXMLController implements Initializable {
 		// field is empty or invalid.
 		createButton.disableProperty().bind(listView.getSelectionModel().selectedItemProperty().isNotNull()
 				.or(wordTextField.textProperty().isEmpty()).or(definitionTextArea.textProperty().isEmpty()));
+	}
+
+	private void populateChoiceBox() {
+		// https://stackoverflow.com/a/27801365/631051
+		sortChoiceBox.setItems(FXCollections.observableArrayList(WordRecord.SortOrder.values()));
+		sortChoiceBox.setValue(WordRecord.SortOrder.ALPHABETICALLY_FORWARD);
+		setSortOrder(WordRecord.SortOrder.ALPHABETICALLY_FORWARD);
+	}
+
+	private void addListeners() {
+		// Listen for records to be selected.
+		listView.getSelectionModel().selectedItemProperty().addListener(wordRecordChangeListener);
+
+		sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(new SortOrderChangeListener());
 
 	}
 
