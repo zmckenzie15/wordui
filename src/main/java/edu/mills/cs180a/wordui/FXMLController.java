@@ -6,6 +6,7 @@ import edu.mills.cs180a.wordui.model.SampleData;
 import edu.mills.cs180a.wordui.model.WordRecord;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -80,6 +81,15 @@ public class FXMLController implements Initializable {
         listView.getSelectionModel().selectFirst();
     }
 
+    private SimpleBooleanProperty representsNonnegativeInteger(StringProperty sp) {
+        try {
+            int value = Integer.parseInt(sp.getValue());
+            return new SimpleBooleanProperty(value >= 0);
+        } catch (NumberFormatException e) {
+            return new SimpleBooleanProperty(false);
+        }
+    }
+
     private void configureButtons() {
         // Disable the Remove button if nothing is selected in the ListView control.
         removeButton.disableProperty()
@@ -91,10 +101,16 @@ public class FXMLController implements Initializable {
                 .bind(listView.getSelectionModel().selectedItemProperty().isNull()
                         .or(modifiedProperty.not())
                         .or(wordTextField.textProperty().isEmpty())
+                        .or(representsNonnegativeInteger(frequencyTextField.textProperty()).not())
                         .or(definitionTextArea.textProperty().isEmpty()));
 
-        // TODO: Disable the Create button if an existing entry is selected or any
+        // Disable the Create button if an existing entry is selected or any
         // field is empty or invalid.
+        createButton.disableProperty()
+                .bind(listView.getSelectionModel().selectedItemProperty().isNotNull()
+                        .or(wordTextField.textProperty().isEmpty())
+                        .or(representsNonnegativeInteger(frequencyTextField.textProperty()).not())
+                        .or(definitionTextArea.textProperty().isEmpty()));
     }
 
 
