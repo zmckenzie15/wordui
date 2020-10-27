@@ -64,6 +64,13 @@
 								<TextField fx:id="wordTextField"
 									onKeyReleased="#handleKeyAction" prefWidth="248.0"
 									GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+								<Label text="Frequency" GridPane.rowIndex="1" />
+
+								<TextField fx:id="frequencyTextField"
+									onKeyReleased="#handleKeyAction" prefWidth="248.0"
+									GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"
+									GridPane.rowIndex="1" />
+
 								<Label text="Definition" GridPane.rowIndex="2" />
 								<TextArea fx:id="definitionTextArea"
 									maxHeight="1.7976931348623157E308"

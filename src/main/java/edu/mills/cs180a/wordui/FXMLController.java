@@ -52,9 +52,11 @@ public class FXMLController implements Initializable {
             modifiedProperty.set(false);
             if (newValue != null) {
                 wordTextField.setText(selectedWordRecord.getWord());
+                frequencyTextField.setText(Integer.toString(selectedWordRecord.getFrequency()));
                 definitionTextArea.setText(selectedWordRecord.getDefinition());
             } else {
                 wordTextField.setText("");
+                frequencyTextField.setText("");
                 definitionTextArea.setText("");
             }
         }
@@ -109,7 +111,9 @@ public class FXMLController implements Initializable {
     private void createButtonAction(ActionEvent actionEvent) {
         System.out.println("Create");
         WordRecord wordRecord =
-                new WordRecord(wordTextField.getText(), definitionTextArea.getText());
+                new WordRecord(wordTextField.getText(),
+                        Integer.valueOf(frequencyTextField.getText()),
+                        definitionTextArea.getText());
         wordRecordList.add(wordRecord);
         listView.getSelectionModel().select(wordRecord); // select the new item
     }
