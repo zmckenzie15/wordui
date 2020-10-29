@@ -1,5 +1,6 @@
 package edu.mills.cs180a.wordui.model;
 
+import java.util.Comparator;
 import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -13,6 +14,45 @@ public class WordRecord {
             new SimpleIntegerProperty(this, "frequency", 0);
     private final StringProperty definition =
             new SimpleStringProperty(this, "definition", "sample definition");
+
+    /*
+     * private static Comparator<WordRecord> azComparator = new Comparator<WordRecord>() {
+     *
+     * @Override public int compare(WordRecord wr1, WordRecord wr2) { return
+     * wr1.getWord().compareToIgnoreCase(wr2.getWord()); } };
+     */
+    private static Comparator<WordRecord> azComparator =
+            (wr1, wr2) -> wr1.getWord().compareToIgnoreCase(wr2.getWord());
+    private static Comparator<WordRecord> zaComparator =
+            (wr1, wr2) -> wr2.getWord().compareToIgnoreCase(wr1.getWord());
+    private static Comparator<WordRecord> increasingFreqComparator =
+            (wr1, wr2) -> wr1.getFrequency().compareTo(wr2.getFrequency());
+    private static Comparator<WordRecord> decreasingFreqComparator =
+            (wr1, wr2) -> wr2.getFrequency().compareTo(wr1.getFrequency());
+
+    public enum SortOrder {
+        ALPHABETICALLY_FORWARD("alphabetically (A-Z)", azComparator),
+        ALPHABETICALLY_BACKWARD("alphabetically (Z-A)", zaComparator),
+        BY_FREQ_ASCENDING("by frequency (low to high)", increasingFreqComparator),
+        BY_FREQ_DESCENDING("by frequency (high to low)", decreasingFreqComparator);
+
+        private final String name;
+        private final Comparator<WordRecord> comparator;
+
+        private SortOrder(String name, Comparator<WordRecord> comparator) {
+            this.name = name;
+            this.comparator = comparator;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public Comparator<WordRecord> getComparator() {
+            return comparator;
+        }
+    }
 
     public WordRecord() {}
 
