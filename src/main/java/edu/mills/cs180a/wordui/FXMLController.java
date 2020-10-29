@@ -42,6 +42,7 @@ public class FXMLController implements Initializable {
     private final BooleanProperty modifiedProperty = new SimpleBooleanProperty(false);
     private ChangeListener<WordRecord> wordRecordChangeListener = new WordRecordChangeListener();
 
+    // Called when the user selects a WordRecord.
     private class WordRecordChangeListener implements ChangeListener<WordRecord> {
         @Override
         public void changed(ObservableValue<? extends WordRecord> observable, WordRecord oldValue,
@@ -52,9 +53,11 @@ public class FXMLController implements Initializable {
             modifiedProperty.set(false);
             if (newValue != null) {
                 wordTextField.setText(selectedWordRecord.getWord());
+                frequencyTextField.setText(Integer.toString(selectedWordRecord.getFrequency()));
                 definitionTextArea.setText(selectedWordRecord.getDefinition());
             } else {
                 wordTextField.setText("");
+                frequencyTextField.setText("");;
                 definitionTextArea.setText("");
             }
         }
@@ -95,7 +98,6 @@ public class FXMLController implements Initializable {
         // field is empty or invalid.
     }
 
-
     private void addListeners() {
         listView.getSelectionModel().selectedItemProperty().addListener(wordRecordChangeListener);
     }
@@ -109,7 +111,10 @@ public class FXMLController implements Initializable {
     private void createButtonAction(ActionEvent actionEvent) {
         System.out.println("Create");
         WordRecord wordRecord =
-                new WordRecord(wordTextField.getText(), definitionTextArea.getText());
+                new WordRecord(
+                        wordTextField.getText(),
+                        Integer.parseInt(frequencyTextField.getText()),
+                        definitionTextArea.getText());
         wordRecordList.add(wordRecord);
         listView.getSelectionModel().select(wordRecord); // select the new item
     }
@@ -127,6 +132,7 @@ public class FXMLController implements Initializable {
         listView.getSelectionModel().selectedItemProperty()
                 .removeListener(wordRecordChangeListener);
         entry.setWord(wordTextField.getText());
+        entry.setFrequency(Integer.parseInt(frequencyTextField.getText()));
         entry.setDefinition(definitionTextArea.getText());
         listView.getSelectionModel().selectedItemProperty().addListener(wordRecordChangeListener);
         modifiedProperty.set(false);
