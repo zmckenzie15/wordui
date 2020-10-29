@@ -6,6 +6,7 @@ import edu.mills.cs180a.wordui.model.SampleData;
 import edu.mills.cs180a.wordui.model.WordRecord;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -91,11 +92,22 @@ public class FXMLController implements Initializable {
         updateButton.disableProperty()
                 .bind(listView.getSelectionModel().selectedItemProperty().isNull()
                         .or(modifiedProperty.not())
+                        // .or(isLegalFrequency(frequencyTextField.textProperty()).not())
                         .or(wordTextField.textProperty().isEmpty())
                         .or(definitionTextArea.textProperty().isEmpty()));
 
         // TODO: Disable the Create button if an existing entry is selected or any
         // field is empty or invalid.
+    }
+
+    // A frequency is legal if it is an integer and is at least 0.
+    private BooleanProperty isLegalFrequency(StringProperty sp) {
+        try {
+            int value = Integer.parseInt(sp.get());
+            return new SimpleBooleanProperty(value >= 0);
+        } catch (NumberFormatException e) {
+            return new SimpleBooleanProperty(false);
+        }
     }
 
     private void addListeners() {
