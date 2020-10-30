@@ -41,9 +41,10 @@ public class FXMLController implements Initializable {
 
     private WordRecord selectedWordRecord;
     private final BooleanProperty modifiedProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty freqValidProperty = new SimpleBooleanProperty(false);
     private ChangeListener<WordRecord> wordRecordChangeListener = new WordRecordChangeListener();
 
-    // Called when the user selects a WordRecord.
+    // Called when the user selects or unselects a WordRecord.
     private class WordRecordChangeListener implements ChangeListener<WordRecord> {
         @Override
         public void changed(ObservableValue<? extends WordRecord> observable, WordRecord oldValue,
@@ -55,10 +56,12 @@ public class FXMLController implements Initializable {
             if (newValue != null) {
                 wordTextField.setText(selectedWordRecord.getWord());
                 frequencyTextField.setText(Integer.toString(selectedWordRecord.getFrequency()));
+                freqValidProperty.set(isValidFrequency(frequencyTextField.textProperty()));
                 definitionTextArea.setText(selectedWordRecord.getDefinition());
             } else {
                 wordTextField.setText("");
-                frequencyTextField.setText("");;
+                frequencyTextField.setText("");
+                freqValidProperty.set(false);
                 definitionTextArea.setText("");
             }
         }
@@ -92,7 +95,7 @@ public class FXMLController implements Initializable {
         updateButton.disableProperty()
                 .bind(listView.getSelectionModel().selectedItemProperty().isNull()
                         .or(modifiedProperty.not())
-                        // .or(isLegalFrequency(frequencyTextField.textProperty()).not())
+                        .or(freqValidProperty.not())
                         .or(wordTextField.textProperty().isEmpty())
                         .or(definitionTextArea.textProperty().isEmpty()));
 
@@ -101,12 +104,13 @@ public class FXMLController implements Initializable {
     }
 
     // A frequency is legal if it is an integer and is at least 0.
-    private BooleanProperty isLegalFrequency(StringProperty sp) {
+    private boolean isLegalFrequency(StringProperty sp) {
+        System.out.println("isLegalFrequency(" + sp.get() + ")");
         try {
             int value = Integer.parseInt(sp.get());
-            return new SimpleBooleanProperty(value >= 0);
+            return value >= 0;
         } catch (NumberFormatException e) {
-            return new SimpleBooleanProperty(false);
+            return false;
         }
     }
 
@@ -117,6 +121,7 @@ public class FXMLController implements Initializable {
     @FXML
     private void handleKeyAction(KeyEvent keyEvent) {
         modifiedProperty.set(true);
+        freqValidProperty.set(isValidFrequency(frequencyTextField.textProperty()));
     }
 
     @FXML

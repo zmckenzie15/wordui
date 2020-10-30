@@ -38,6 +38,7 @@
 								<Label text="Word" />
 								<TextField fx:id="wordTextField" onKeyReleased="#handleKeyAction" prefWidth="248.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
 								<Label text="Definition" GridPane.rowIndex="2" />
+								                        <TextField fx:id="frequencyTextField"  onKeyReleased="#handleKeyAction" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 								<TextArea fx:id="definitionTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyReleased="#handleKeyAction" prefHeight="173.0" prefWidth="265.0" wrapText="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS" />
 								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="3">
 									<buttons>
@@ -47,7 +48,6 @@
 									</buttons>
 								</ButtonBar>
                         <Label text="Frequency" GridPane.rowIndex="1" />
-                        <TextField fx:id="frequencyTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 							</children>
 						</GridPane>
 					</children>
