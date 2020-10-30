@@ -130,8 +130,8 @@ public class FXMLController implements Initializable {
         // field is empty or invalid.
     }
 
-    // A frequency is legal if it is an integer and is at least 0.
-    private boolean isLegalFrequency(StringProperty sp) {
+    // A frequency is valid if it is an integer and is at least 0.
+    private boolean isValidFrequency(StringProperty sp) {
         System.out.println("isLegalFrequency(" + sp.get() + ")");
         try {
             int value = Integer.parseInt(sp.get());
