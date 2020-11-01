@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import edu.mills.cs180a.wordui.model.SampleData;
 import edu.mills.cs180a.wordui.model.WordRecord;
 import edu.mills.cs180a.wordui.model.WordRecord.SortOrder;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -18,12 +19,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
 public class FXMLController implements Initializable {
+    @FXML
+    private Label recordCountLabel;
     @FXML
     private TextField wordTextField;
     @FXML
@@ -89,22 +93,25 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        addListeners();
+        setupListView();
+        configureButtons();
+        populateChoiceBox();
+    }
+
+    private void setupListView() {
         // Initialize the list.
         SampleData.fillSampleData(wordRecordList);
-
-        configureButtons();
 
         // Sort list alphabetically.
         setSortOrder(WordRecord.SortOrder.ALPHABETICALLY_FORWARD);
 
-        populateChoiceBox();
-        addListeners();
+        // Set up the record count. This must occur after listView is populated.
+        recordCountLabel.textProperty().bind(Bindings.size(listView.getItems()).asString());
 
         // Pre-select the first item.
         listView.getSelectionModel().selectFirst();
     }
-
-
 
     private void populateChoiceBox() {
         sortChoiceBox.setItems(FXCollections.observableArrayList(
@@ -132,7 +139,6 @@ public class FXMLController implements Initializable {
 
     // A frequency is valid if it is an integer and is at least 0.
     private boolean isValidFrequency(StringProperty sp) {
-        System.out.println("isLegalFrequency(" + sp.get() + ")");
         try {
             int value = Integer.parseInt(sp.get());
             return value >= 0;
