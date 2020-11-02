@@ -8,14 +8,26 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class WordRecord {
+    /*
+     * private static Comparator<WordRecord> azComparator = new Comparator<WordRecord>() {
+     *
+     * @Override public int compare(WordRecord wr1, WordRecord wr2) { return
+     * wr1.getWord().compareToIgnoreCase(wr2.getWord()); } };
+     */
     private static Comparator<WordRecord> azComparator =
-            ((w1, w2) -> w1.getWord().compareToIgnoreCase(w2.getWord()));
+            (wr1, wr2) -> wr1.getWord().compareToIgnoreCase(wr2.getWord());
     private static Comparator<WordRecord> zaComparator =
-            ((w1, w2) -> w2.getWord().compareToIgnoreCase(w1.getWord()));
+            (wr1, wr2) -> wr2.getWord().compareToIgnoreCase(wr1.getWord());
+    private static Comparator<WordRecord> increasingFreqComparator =
+            (wr1, wr2) -> wr1.getFrequency().compareTo(wr2.getFrequency());
+    private static Comparator<WordRecord> decreasingFreqComparator =
+            (wr1, wr2) -> wr2.getFrequency().compareTo(wr1.getFrequency());
 
     public enum SortOrder {
         ALPHABETICALLY_FORWARD("alphabetically (A-Z)", azComparator),
-        ALPHABETICALLY_BACKWARD("alphabetically (Z-A)", zaComparator);
+        ALPHABETICALLY_BACKWARD("alphabetically (Z-A)", zaComparator),
+        BY_FREQ_ASCENDING("by frequency (low to high)", increasingFreqComparator),
+        BY_FREQ_DESCENDING("by frequency (high to low)", decreasingFreqComparator);
 
         private final String name;
         private final Comparator<WordRecord> comparator;
@@ -86,7 +98,7 @@ public class WordRecord {
 
     @Override
     public String toString() {
-        return String.format("%s (%d)", word.get(), frequency.get());
+        return word.get() + " (" + frequency.get() + ")";
     }
 
     @Override
@@ -104,9 +116,4 @@ public class WordRecord {
     public int hashCode() {
         return Objects.hash(word, frequency, definition);
     }
-
-    /*
-     * public static Callback<Person, Observable[]> extractor = p -> new Observable[]
-     * {p.lastnameProperty(), p.firstnameProperty()};
-     */
 }
