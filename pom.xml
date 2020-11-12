@@ -37,10 +37,9 @@
 			<version>11</version>
 		</dependency>
 		<dependency>
-			<groupId>cs180a</groupId>
-			<artifactId>spring-swagger-codegen-feign-api-client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
+			<groupId>edu.mills.cs180a</groupId>
+			<artifactId>spring-swagger-wordnik-client</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -48,7 +47,6 @@
 			<version>1.18.2</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>
