@@ -25,6 +25,13 @@
 		<name>Mills College Department of Mathematics and Computer Science</name>
 	</organization>
 
+	<repositories>
+		<repository>
+			<id>CS180A site</id>
+			<name>Mills CS180A repository</name>
+			<url>http://spertus.com/cs180a</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.openjfx</groupId>
@@ -74,6 +81,41 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.1.1</version>
+					<executions>
+						<execution>
+							<phase>compile</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.2.0</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<classpathPrefix>lib/</classpathPrefix>
+								<mainClass>edu.mills.cs180a.wordui.WordUI</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>
