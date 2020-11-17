@@ -8,7 +8,8 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import edu.mills.cs180a.wordnik.client.api.WordApi;
 import edu.mills.cs180a.wordnik.client.model.FrequencySummary;
 
@@ -33,10 +34,9 @@ class SampleDataTest {
                 SampleData.FREQ_COUNT_KEY, count);
     }
 
-    @Test
-    void testGetFrequencyFromSummary() {
-        assertEquals(339, SampleData.getFrequencyByYear(mockWordApi, "apple", 2000));
-        assertEquals(464, SampleData.getFrequencyByYear(mockWordApi, "apple", 2001));
-        assertEquals(0, SampleData.getFrequencyByYear(mockWordApi, "apple", 2020));
+    @ParameterizedTest
+    @CsvSource({"apple,2000,339", "apple,2001,464", "apple,2020,0"})
+    void testGetFrequencyFromSummary(String word, int year, int count) {
+        assertEquals(count, SampleData.getFrequencyByYear(mockWordApi, word, year));
     }
 }
