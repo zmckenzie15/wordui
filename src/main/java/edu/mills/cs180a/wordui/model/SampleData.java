@@ -20,8 +20,7 @@ public class SampleData {
     private static final int FREQ_YEAR = 2012;
     private static ApiClient client; // set in fillSampleData()
 
-    @VisibleForTesting
-    protected static int getFrequencyFromSummary(FrequencySummary fs, int year) {
+    private static int getFrequencyFromSummary(FrequencySummary fs, int year) {
         List<Object> freqObjects = fs.getFrequency();
         // freqObjects is a List<Map> [{"year" = "2012", "count" = 179}] for "Java"
 
@@ -44,16 +43,17 @@ public class SampleData {
     }
 
     // TODO: Move to spring-swagger-wordnik-client
-    private static int getFrequencyByYear(String word, int year) {
-        WordApi wordApi = client.buildClient(WordApi.class);
+    @VisibleForTesting
+    protected static int getFrequencyByYear(WordApi wordApi, String word, int year) {
         FrequencySummary fs = wordApi.getWordFrequency(word, "false", year, year);
         return getFrequencyFromSummary(fs, year);
     }
 
     private static WordRecord buildWordRecord(String word, Map<Object, Object> definition) {
+        WordApi wordApi = client.buildClient(WordApi.class);
         return new WordRecord(
                 word,
-                getFrequencyByYear(word, FREQ_YEAR),
+                getFrequencyByYear(wordApi, word, FREQ_YEAR),
                 definition.get("text").toString());
     }
 
