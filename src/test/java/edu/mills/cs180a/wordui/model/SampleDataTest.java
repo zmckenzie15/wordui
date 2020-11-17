@@ -3,7 +3,6 @@ package edu.mills.cs180a.wordui.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.List;
@@ -16,23 +15,14 @@ import edu.mills.cs180a.wordnik.client.model.FrequencySummary;
 
 class SampleDataTest {
     private final WordApi mockWordApi = mock(WordApi.class);
-    private static List<Object> FREQ_OBJECTS_APPLE = List.of(
-            // frequencies for "apple"
-            makeMap(2000, 339),
-            makeMap(2001, 464));
-    private static final List<Object> FREQ_OBJECTS_ORANGE = List.of(
-            // frequencies for "orange"
-            makeMap(2000, 774),
-            makeMap(2001, 941));
+    private static final Map<String, FrequencySummary> FREQS_MAP = Map.of(
+            "apple", makeFrequencySummary(List.of(makeMap(2000, 339), makeMap(2001, 464))),
+            "orange", makeFrequencySummary(List.of(makeMap(2000, 774), makeMap(2001, 941))));
 
     @BeforeEach
     void setup() {
-        FrequencySummary appleFS = makeFrequencySummary(FREQ_OBJECTS_APPLE);
-        when(mockWordApi.getWordFrequency(eq("apple"), anyString(), anyInt(), anyInt()))
-                .thenReturn(appleFS);
-        FrequencySummary orangeFS = makeFrequencySummary(FREQ_OBJECTS_ORANGE);
-        when(mockWordApi.getWordFrequency(eq("orange"), anyString(), anyInt(), anyInt()))
-                .thenReturn(orangeFS);
+        when(mockWordApi.getWordFrequency(anyString(), anyString(), anyInt(), anyInt()))
+                .thenAnswer(invocation -> FREQS_MAP.get(invocation.getArgument(0)));
     }
 
     private static Map<Object, Object> makeMap(int year, int count) {
