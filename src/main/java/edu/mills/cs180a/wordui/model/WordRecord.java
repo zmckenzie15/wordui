@@ -1,18 +1,19 @@
 package edu.mills.cs180a.wordui.model;
 
-import java.util.Objects;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import java.util.*;
+import javafx.beans.property.*;
 
 public class WordRecord {
     private final StringProperty word = new SimpleStringProperty(this, "word", "");
+    private final IntegerProperty frequency = new SimpleIntegerProperty(this, "frequency", 0);
     private final StringProperty definition =
             new SimpleStringProperty(this, "definition", "sample definition");
 
     public WordRecord() {}
 
-    public WordRecord(String word, String definition) {
+    public WordRecord(String word, Integer frequency, String definition) {
         this.word.set(word);
+        this.frequency.set(frequency);
         this.definition.set(definition);
     }
 
@@ -26,6 +27,18 @@ public class WordRecord {
 
     public void setWord(String word) {
         this.word.set(word);
+    }
+
+    public Integer getFrequency() {
+        return frequency.get();
+    }
+
+    public IntegerProperty frequencyProperty() {
+        return frequency;
+    }
+
+    public void setFrequency(int freq) {
+        frequency.set(freq);
     }
 
     public String getDefinition() {
@@ -42,7 +55,7 @@ public class WordRecord {
 
     @Override
     public String toString() {
-        return word.get();
+        return word.get() + " (" + frequency.get() + ")";
     }
 
     @Override
