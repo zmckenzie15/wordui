@@ -1,5 +1,6 @@
 package edu.mills.cs180a.wordui;
 
+import java.io.*;
 import java.net.*;
 import java.util.*;
 import edu.mills.cs180a.wordui.model.*;
@@ -33,6 +34,7 @@ public class FXMLController implements Initializable {
     private WordRecord selectedWordRecord;
     private final BooleanProperty modifiedProperty = new SimpleBooleanProperty(false);
     private ChangeListener<WordRecord> wordRecordChangeListener = new WordRecordChangeListener();
+    private WorduiWordnikClient client;
 
     private class WordRecordChangeListener implements ChangeListener<WordRecord> {
         @Override
@@ -58,6 +60,13 @@ public class FXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // Initialize the list.
         SampleData.fillSampleData(wordRecordList);
+        try {
+            client = WorduiWordnikClient.getInstance();
+            wordRecordList.add(client.getWordOfTheDay("2022-05-02"));
+        } catch (IOException e) {
+            // Was unable to connect to Wordnik API.
+            // Just use sample data.
+        }
 
         configureButtons();
 

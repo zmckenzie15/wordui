@@ -14,20 +14,23 @@ public class WorduiWordnikClient {
     private static final int FREQ_YEAR = 2012;
 
     private WordApi wordApi;
+    private WordsApi wordsApi;
 
-    private WorduiWordnikClient(WordApi wordApi) {
+    private WorduiWordnikClient(WordApi wordApi, WordsApi wordsApi) {
         this.wordApi = wordApi;
+        this.wordsApi = wordsApi;
     }
 
     public static WorduiWordnikClient getInstance() throws IOException {
         String key = getApiKey();
         ApiClient client = new ApiClient("api_key", key);
         WordApi wordApi = client.buildClient(WordApi.class);
-        return new WorduiWordnikClient(wordApi);
+        WordsApi wordsApi = client.buildClient(WordsApi.class);
+        return new WorduiWordnikClient(wordApi, wordsApi);
     }
 
     public static WorduiWordnikClient getMockInstance(WordApi wordApi) {
-        return new WorduiWordnikClient(wordApi);
+        return new WorduiWordnikClient(wordApi, null);
     }
 
     private static String getApiKey() throws IOException {
@@ -66,19 +69,19 @@ public class WorduiWordnikClient {
         return 0;
     }
 
-    // public WordRecord getWordOfTheDay(String date) {
-    // WordOfTheDay word = wordsApi.getWordOfTheDay(date);
-    // List<Object> definitions = word.getDefinitions();
-    // if (definitions != null && !definitions.isEmpty()) {
-    // Object definition = definitions.get(0);
-    // if (definition instanceof Map) {
-    // @SuppressWarnings("unchecked")
-    // Map<String, String> definitionAsMap = (Map<String, String>) definition;
-    // return buildWordRecord(word.getWord(), definitionAsMap);
-    // }
-    // }
-    // return new WordRecord(word.getWord(), 0, ""); // no frequency or definition
-    // }
+    public WordRecord getWordOfTheDay(String date) {
+        WordOfTheDay word = wordsApi.getWordOfTheDay(date);
+        List<Object> definitions = word.getDefinitions();
+        if (definitions != null && !definitions.isEmpty()) {
+            Object definition = definitions.get(0);
+            if (definition instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, String> definitionAsMap = (Map<String, String>) definition;
+                return buildWordRecord(word.getWord(), definitionAsMap);
+            }
+        }
+        return new WordRecord(word.getWord(), 0, ""); // no frequency or definition
+    }
 
     private WordRecord buildWordRecord(String word, Map<String, String> definition) {
         return new WordRecord(word, getFrequencyByYear(word, FREQ_YEAR),
