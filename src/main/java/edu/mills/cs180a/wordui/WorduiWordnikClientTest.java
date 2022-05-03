@@ -1,13 +1,16 @@
 package edu.mills.cs180a.wordui;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import java.io.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
+import edu.mills.cs180a.wordnik.client.api.*;
 
 class WorduiWordnikClientTest {
     private static WorduiWordnikClient client;
+    private static WordApi mockWordApi = mock(WordApi.class);
 
     @BeforeAll
     public static void setup() throws IOException {
